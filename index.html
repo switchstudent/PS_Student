@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Class Performance Analysis</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
+    />
+    <style>
+      .grade-a {
+        color: var(--pico-color-green-500);
+        font-weight: bold;
+      }
+      .grade-b {
+        color: var(--pico-color-blue-500);
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="container">
+      <nav>
+        <ul>
+          <li><a href="class-analysis.html">Class Analysis</a></li>
+          <li><a href="all-students-data.html">All Students Data</a></li>
+        </ul>
+      </nav>
+      <hgroup>
+        <h1>Class Performance Analysis</h1>
+        <p>Statistical analysis for students</p>
+      </hgroup>
+    </header>
+
+    <main class="container">
+      <section>
+        <h2>Class Topper</h2>
+        <div id="topper-info"></div>
+      </section>
+      <section>
+        <h2>A Grade Students</h2>
+        <div id="a-graders-info"></div>
+      </section>
+      <section>
+        <h2>Class Statistics</h2>
+        <div id="class-stats"></div>
+
+        <h3>Subject Averages</h3>
+        <div id="subject-averages" class="grid"></div>
+      </section>
+    </main>
+
+    <footer class="container">
+      <small>Learning JavaScript for loops</small>
+    </footer>
+
+    <script>
+      const studentsData = [
+        {
+          name: "Rahul",
+          rollNo: 101,
+          hindi: 80,
+          english: 75,
+          maths: 90,
+          computers: 88,
+          science: 82,
+          totalMarks: 415,
+          avgMarks: 83,
+        },
+        {
+          name: "Amit",
+          rollNo: 102,
+          hindi: 85,
+          english: 70,
+          maths: 95,
+          computers: 92,
+          science: 78,
+          totalMarks: 420,
+          avgMarks: 84,
+        },
+        {
+          name: "Priya",
+          rollNo: 103,
+          hindi: 78,
+          english: 92,
+          maths: 87,
+          computers: 95,
+          science: 90,
+          totalMarks: 442,
+          avgMarks: 88.4,
+        },
+        {
+          name: "Kaveri",
+          rollNo: 104,
+          hindi: 89,
+          english: 95,
+          maths: 96,
+          computers: 98,
+          science: 91,
+          totalMarks: 469,
+          avgMarks: 93.8,
+        },
+      ];
+
+      function getGrade(avgMarks) {
+        if (avgMarks >= 90) return "A";
+        if (avgMarks >= 80) return "B";
+        if (avgMarks >= 70) return "C";
+        if (avgMarks >= 60) return "D";
+        if (avgMarks >= 50) return "E";
+        return "F";
+      }
+
+      function findTopper() {
+        let topper = studentsData[0];
+        for (let i = 1; i < studentsData.length; i++) {
+          if (studentsData[i].totalMarks > topper.totalMarks) {
+            topper = studentsData[i];
+          }
+        }
+        return topper;
+      }
+      function displayTopper() {
+        const topper = findTopper();
+        const grade = getGrade(topper.avgMarks);
+
+        document.getElementById("topper-info").innerHTML = `
+        <p><strong>Name:</strong>${topper.name}</p>
+        <p><strong>Roll No:</strong>${topper.rollNo}</p>
+        <p><strong>Total Marks:</strong>${topper.totalMarks}</p>
+        <p><strong>Grade:</strong>${grade}</p>`;
+      }
+      function findAGraders() {
+        let aGraders = [];
+        for (let i = 0; i < studentsData.length; i++) {
+          if (studentsData[i].avgMarks >= 90) {
+            aGraders.push(studentsData[i]);
+          }
+        }
+        return aGraders;
+      }
+      function displayAGraders() {
+        const aGraders = findAGraders();
+        let html = `<p><strong>A Graders:${aGraders.length}</strong></p>`;
+        if (aGraders.length > 0) {
+          html += `
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Roll No</th>
+                      <th>Total Marks</th>
+                      <th>Average</th>
+                      </tr>
+                      </thead>
+                      </tbody>`;
+          for (let i = 0; i < aGraders.length; i++) {
+            html += `<tr>
+                      <td>${aGraders[i].name}</td>
+                      <td>${aGraders[i].rollNo}</td>
+                      <td>${aGraders[i].totalMarks}</td>
+                      <td>${aGraders[i].avgMarks}</td>
+                      </tr>`;
+          }
+          html += `</tbody></table>`;
+        } else {
+          html += `<p>No students achieved A grade in this class.</p>`;
+        }
+        document.getElementById("a-graders-info").innerHTML = html;
+      }
+      function calculateClassStats() {
+        let totalClassMarks = 0;
+        let hindiTotal = 0;
+        let englishTotal = 0;
+        let mathsTotal = 0;
+        let computersTotal = 0;
+        let scienceTotal = 0;
+
+        for (let i = 0; i < studentsData.length; i++) {
+          totalClassMarks = totalClassMarks + studentsData[i].totalMarks;
+          hindiTotal = hindiTotal + studentsData[i].hindi;
+          englishTotal = englishTotal + studentsData[i].english;
+          mathsTotal = mathsTotal + studentsData[i].maths;
+          computersTotal = computersTotal + studentsData[i].computers;
+          scienceTotal = scienceTotal + studentsData[i].science;
+        }
+        const classAverage = totalClassMarks / studentsData.length;
+        return {
+          totalClassMarks,
+          classAverage,
+          subjectAverages: {
+            hindi: hindiTotal / studentsData.length,
+            english: englishTotal / studentsData.length,
+            maths: mathsTotal / studentsData.length,
+            computers: computersTotal / studentsData.length,
+            science: scienceTotal / studentsData.length,
+          },
+        };
+      }
+      function displayClassStatus() {
+        const stats = calculateClassStats();
+        document.getElementById("class-stats").innerHTML = `
+        <p><strong>Total Class Marks:</strong>${stats.totalClassMarks}</p>
+        <p><strong>Class Average:</strong>${stats.classAverage}</p>`;
+
+        const subjectNames = {
+          hindi: "Hindi",
+          english: "English",
+          maths: "Maths",
+          computers: "Computers",
+          science: "Science",
+        };
+        let subjectHtml = "";
+        const subjects = ["hindi", "english", "maths", "computers", "science"];
+
+        for (let i = 0; i < subjects.length; i++) {
+          let subject = subjects[i];
+          subjectHtml += `<article>
+            <header><strong>${subjectNames[subject]}</strong></header>
+            <p>Average:${stats.subjectAverages[subject]}</p>
+            </article>`;
+        }
+        document.getElementById("subject-averages").innerHTML = subjectHtml;
+      }
+      function generateAnalysisReport() {
+        displayTopper();
+        displayAGraders();
+        displayClassStatus();
+      }
+      document.addEventListener("DOMContentLoaded", generateAnalysisReport);
+    </script>
+  </body>
+</html>
